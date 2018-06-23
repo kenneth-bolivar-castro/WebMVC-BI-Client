@@ -23,7 +23,7 @@ namespace WebMVC_BI_Client
                       "~/Scripts/bootstrap.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
+                      "~/Content/bootstrap-materia.min.css",
                       "~/Content/site.css"));
         }
     }
