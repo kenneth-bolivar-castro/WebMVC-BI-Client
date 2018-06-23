@@ -49,9 +49,8 @@ namespace WebMVC_BI_Client.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Correo electrónico")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name = "Nombre usuario")]
+        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -64,6 +63,10 @@ namespace WebMVC_BI_Client.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        [Display(Name = "Nombre usuario")]
+        public string UserName { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Correo electrónico")]
