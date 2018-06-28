@@ -7,20 +7,15 @@
 <body>
     <script src="Scripts/jquery-3.3.1.js"></script>
     <h1>Foo bar char</h1>
-    <div id="response"></div>
+    <span id="response"></span>
     <script>
         $(function () {
             $.post('/api/token', {
-                //grant_type: 'password',
-                //username: 'admin',
-                //password: 'S3cr3t!',
+                grant_type: 'api_token',
                 apiToken: 'a1a7c620-19e6-422d-8fd5-6df665336154'
             }, function (response) {
-                console.log(response.responseText);
-            })
-            .always(function (response) {
-                $('#response').text(response.responseText);
-            });
+                console.log(response);
+                $('#response').text(response);
 
             //$.ajax('/api/values', {
             //    type: 'GET',
@@ -28,6 +23,7 @@
             //}).always(function (response) {
             //    $('#response').text(JSON.stringify(response));
             //});
+            });
         });
     </script>
 </body>

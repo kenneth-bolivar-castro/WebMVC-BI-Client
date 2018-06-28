@@ -97,13 +97,21 @@ namespace WebMVC_BI_Client
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
             string apiToken = context.Parameters.Get("apiToken");
-            var user = UserStore.Users.Where(u => u.ApiToken == apiToken).First();
-            
+            var user = UserStore.Users.Where(u => u.ApiToken == apiToken).FirstOrDefault();
+
             if(null == user)
             {
-                context.SetError("invalid_apiToken", string.Format("Invalid API token '{0}'", apiToken));
+                context.SetError("invalid_apiToken", string.Format("Invalid API token: {0}", apiToken));
                 return Task.FromResult<object>(null);
             }
+
+            string grantType = context.Parameters.Get("grant_type");
+            if (0 != string.Compare("api_token", grantType))
+            {
+                context.SetError("invalid_grant_type", string.Format("Invalid grant_type: {0}", grantType));
+                return Task.FromResult<object>(null);
+            }
+
 
             // Should really do some validation here :)
             context.Validated();
