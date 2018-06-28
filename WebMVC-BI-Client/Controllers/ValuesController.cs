@@ -7,6 +7,7 @@ using System.Web.Http;
 
 namespace WebMVC_BI_Client.Controllers
 {
+    [Authorize]
     public class ValuesController : ApiController
     {
         // GET api/<controller>

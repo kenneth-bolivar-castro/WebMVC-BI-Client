@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
+using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
+using Microsoft.Owin.Security.OAuth;
 using Owin;
 using WebMVC_BI_Client.Models;
 
@@ -63,6 +69,54 @@ namespace WebMVC_BI_Client
             //    ClientId = "",
             //    ClientSecret = ""
             //});
+
+            OAuthAuthorizationServerOptions OAuthOptions = new OAuthAuthorizationServerOptions
+            {
+                TokenEndpointPath = new PathString("/api/token"),
+                Provider = new ApplicationOAuthProvider(),
+                AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(60),
+                AllowInsecureHttp = true,
+                AuthenticationMode = AuthenticationMode.Active
+            };
+
+            app.UseOAuthBearerTokens(OAuthOptions);
+        }
+    }
+
+    internal class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
+    {
+        private UserStore<ApplicationUser> userStore;
+
+        public UserStore<ApplicationUser> UserStore { get; set; }
+
+        public ApplicationOAuthProvider()
+        {
+            UserStore = new UserStore<ApplicationUser>(ApplicationDbContext.Create());
+        }
+
+        public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
+        {
+            string apiToken = context.Parameters.Get("apiToken");
+            var user = UserStore.Users.Where(u => u.ApiToken == apiToken).First();
+            
+            if(null == user)
+            {
+                context.SetError("invalid_apiToken", string.Format("Invalid API token '{0}'", apiToken));
+                return Task.FromResult<object>(null);
+            }
+
+            // Should really do some validation here :)
+            context.Validated();
+            return base.ValidateClientAuthentication(context);
+        }
+
+        public override Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        {
+            var oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
+            oAuthIdentity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
+            var ticket = new AuthenticationTicket(oAuthIdentity, new AuthenticationProperties());
+            context.Validated(ticket);
+            return base.GrantResourceOwnerCredentials(context);
         }
     }
 }

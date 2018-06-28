@@ -22,7 +22,10 @@ namespace WebMVC_BI_Client.Migrations
             var manager = new UserManager<ApplicationUser>(store);
 
             // Create new user instance.
-            var user = new ApplicationUser { UserName = "admin" };
+            var user = new ApplicationUser {
+                UserName = "admin",
+                ApiToken = Guid.NewGuid().ToString()
+            };
 
             // Finally create it within database also defining a password that will be hashed.
             manager.Create(user, "S3cr3t!");

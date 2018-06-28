@@ -208,10 +208,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="ClientsController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="EntriesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -219,9 +221,21 @@
     <Compile Include="Migrations\201806220442380_InitialCreate.Designer.cs">
       <DependentUpon>201806220442380_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806270534124_AddApiToken.cs" />
+    <Compile Include="Migrations\201806270534124_AddApiToken.Designer.cs">
+      <DependentUpon>201806270534124_AddApiToken.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\ApplicationUsersSeeder.cs" />
+    <Compile Include="Migrations\BIClient\201806280426078_Initial.cs" />
+    <Compile Include="Migrations\BIClient\201806280426078_Initial.Designer.cs">
+      <DependentUpon>201806280426078_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\BIClient\Configuration.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\BIClientDBContext.cs" />
+    <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\Entry.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -237,6 +251,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="HtmlPage1.html" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -307,6 +322,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201806220442380_InitialCreate.resx">
       <DependentUpon>201806220442380_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806270534124_AddApiToken.resx">
+      <DependentUpon>201806270534124_AddApiToken.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\BIClient\201806280426078_Initial.resx">
+      <DependentUpon>201806280426078_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
