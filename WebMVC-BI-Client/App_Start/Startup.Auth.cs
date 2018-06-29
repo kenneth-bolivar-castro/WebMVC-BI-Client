@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -85,8 +87,6 @@ namespace WebMVC_BI_Client
 
     internal class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
     {
-        private UserStore<ApplicationUser> userStore;
-
         public UserStore<ApplicationUser> UserStore { get; set; }
 
         public ApplicationOAuthProvider()
@@ -96,35 +96,45 @@ namespace WebMVC_BI_Client
 
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
-            string apiToken = context.Parameters.Get("apiToken");
-            var user = UserStore.Users.Where(u => u.ApiToken == apiToken).FirstOrDefault();
+            string clientId = string.Empty;
+            string clientSecret = string.Empty;
 
-            if(null == user)
+            if (context.TryGetFormCredentials(out clientId, out clientSecret))
             {
-                context.SetError("invalid_apiToken", string.Format("Invalid API token: {0}", apiToken));
-                return Task.FromResult<object>(null);
+                if (0 != string.Compare("aspnet-mvc-biclient-android", clientId))
+                {
+                    context.SetError("invalid_client_id", string.Format("Invalid client_id: {0}", clientId));
+                    return Task.FromResult<object>(null);
+                }
+
+                var user = UserStore.Users.Where(u => u.ApiToken == clientSecret).FirstOrDefault();
+                if (null == user)
+                {
+                    context.SetError("invalid_client_secret", string.Format("Invalid client_secret: {0}", clientSecret));
+                    return Task.FromResult<object>(null);
+                }
+
+                // Setup username value into Owin context.
+                context.OwinContext.Set<string>("UserName", user.UserName);
+
+                context.Validated();
             }
 
-            string grantType = context.Parameters.Get("grant_type");
-            if (0 != string.Compare("api_token", grantType))
-            {
-                context.SetError("invalid_grant_type", string.Format("Invalid grant_type: {0}", grantType));
-                return Task.FromResult<object>(null);
-            }
-
-
-            // Should really do some validation here :)
-            context.Validated();
             return base.ValidateClientAuthentication(context);
         }
 
-        public override Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        public override Task GrantClientCredentials(OAuthGrantClientCredentialsContext context)
         {
+            // Extract username defined on "ValidateClientAuthentication" method.
+            string userName = context.OwinContext.Get<string>("UserName");
+
             var oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
-            oAuthIdentity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
+            oAuthIdentity.AddClaim(new Claim(ClaimTypes.Name, userName));
+
             var ticket = new AuthenticationTicket(oAuthIdentity, new AuthenticationProperties());
             context.Validated(ticket);
-            return base.GrantResourceOwnerCredentials(context);
+
+            return base.GrantClientCredentials(context);
         }
     }
 }

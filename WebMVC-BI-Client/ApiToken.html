@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>ASPNET MVC OAuth</title>
+</head>
+<body>
+    <script src="Scripts/jquery-3.3.1.js"></script>
+    <h1>AspNet OAuth</h1>
+    <button type="button" id="getToken">Get Token</button>
+    <hr />
+    <span id="token"></span>
+    <hr />
+    <input type="text" id="token" />
+    <button type="button" id="loadValues">Load values</button>
+    <span id="values"></span>
+    <hr />
+    <script>
+        $(function () {
+
+            $('button#getToken').click(function () {
+                //
+                $.post('/api/token', {
+                    grant_type: 'client_credentials',
+                    client_id: 'aspnet-mvc-biclient-android',
+                    client_secret: 'a1a7c620-19e6-422d-8fd5-6df665336154'
+                }).always(function (response) {
+                    $('span#token').text(JSON.stringify(response));
+                });
+
+                return false;
+            });
+
+            $('button#loadValues').click(function () {
+                //
+                $.ajax('/api/values', {
+                    type: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + $('input#token').val()
+                    }
+                }).always(function (response) {
+                    $('span#values').text(JSON.stringify(response));
+                });
+
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>
