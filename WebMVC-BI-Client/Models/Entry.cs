@@ -19,5 +19,7 @@ namespace WebMVC_BI_Client.Models
         public string Item { get; set; }
         [Required]
         public Client Client { get; set; }
+        [Required]
+        public User User { get; set; }
     }
 }
