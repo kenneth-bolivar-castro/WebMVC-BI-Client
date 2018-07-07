@@ -32,6 +32,8 @@ namespace WebMVC_BI_Client.Models
             return new ApplicationDbContext();
         }
 
+        public System.Data.Entity.DbSet<WebMVC_BI_Client.Models.ApplicationUser> ApplicationUsers { get; set; }
+
         //public System.Data.Entity.DbSet<WebMVC_BI_Client.Models.Entry> Entries { get; set; }
     }
 }
