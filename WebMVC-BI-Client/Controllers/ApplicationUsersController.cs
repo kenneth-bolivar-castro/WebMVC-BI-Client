@@ -2,119 +2,118 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Description;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
 using WebMVC_BI_Client.Models;
 
 namespace WebMVC_BI_Client.Controllers
 {
-    public class ApplicationUsersController : ApiController
+    public class ApplicationUsersController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/ApplicationUsers
-        public IQueryable<ApplicationUser> GetApplicationUsers()
+        // GET: ApplicationUsers
+        public async Task<ActionResult> Index()
         {
-            return db.ApplicationUsers;
+            return View(await db.ApplicationUsers.ToListAsync());
         }
 
-        // GET: api/ApplicationUsers/5
-        [ResponseType(typeof(ApplicationUser))]
-        public async Task<IHttpActionResult> GetApplicationUser(string id)
+        // GET: ApplicationUsers/Details/5
+        public async Task<ActionResult> Details(string id)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             ApplicationUser applicationUser = await db.ApplicationUsers.FindAsync(id);
             if (applicationUser == null)
             {
-                return NotFound();
+                return HttpNotFound();
             }
-
-            return Ok(applicationUser);
+            return View(applicationUser);
         }
 
-        // PUT: api/ApplicationUsers/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutApplicationUser(string id, ApplicationUser applicationUser)
+        // GET: ApplicationUsers/Create
+        public ActionResult Create()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            return View();
+        }
 
-            if (id != applicationUser.Id)
+        // POST: ApplicationUsers/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create([Bind(Include = "Id,ApiToken,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
+        {
+            if (ModelState.IsValid)
             {
-                return BadRequest();
-            }
-
-            db.Entry(applicationUser).State = EntityState.Modified;
-
-            try
-            {
+                db.ApplicationUsers.Add(applicationUser);
                 await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ApplicationUserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToAction("Index");
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return View(applicationUser);
         }
 
-        // POST: api/ApplicationUsers
-        [ResponseType(typeof(ApplicationUser))]
-        public async Task<IHttpActionResult> PostApplicationUser(ApplicationUser applicationUser)
+        // GET: ApplicationUsers/Edit/5
+        public async Task<ActionResult> Edit(string id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return BadRequest(ModelState);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
-            db.ApplicationUsers.Add(applicationUser);
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ApplicationUserExists(applicationUser.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtRoute("DefaultApi", new { id = applicationUser.Id }, applicationUser);
-        }
-
-        // DELETE: api/ApplicationUsers/5
-        [ResponseType(typeof(ApplicationUser))]
-        public async Task<IHttpActionResult> DeleteApplicationUser(string id)
-        {
             ApplicationUser applicationUser = await db.ApplicationUsers.FindAsync(id);
             if (applicationUser == null)
             {
-                return NotFound();
+                return HttpNotFound();
             }
+            return View(applicationUser);
+        }
 
+        // POST: ApplicationUsers/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit([Bind(Include = "Id,ApiToken,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(applicationUser).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return View(applicationUser);
+        }
+
+        // GET: ApplicationUsers/Delete/5
+        public async Task<ActionResult> Delete(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser applicationUser = await db.ApplicationUsers.FindAsync(id);
+            if (applicationUser == null)
+            {
+                return HttpNotFound();
+            }
+            return View(applicationUser);
+        }
+
+        // POST: ApplicationUsers/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmed(string id)
+        {
+            ApplicationUser applicationUser = await db.ApplicationUsers.FindAsync(id);
             db.ApplicationUsers.Remove(applicationUser);
             await db.SaveChangesAsync();
-
-            return Ok(applicationUser);
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
@@ -124,11 +123,6 @@ namespace WebMVC_BI_Client.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private bool ApplicationUserExists(string id)
-        {
-            return db.ApplicationUsers.Count(e => e.Id == id) > 0;
         }
     }
 }
