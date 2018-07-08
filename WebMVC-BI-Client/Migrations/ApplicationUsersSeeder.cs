@@ -10,25 +10,49 @@ namespace WebMVC_BI_Client.Migrations
 {
     public class ApplicationUsersSeeder
     {
-        public static void run(ApplicationDbContext context)
+        public static void Run(ApplicationDbContext context)
         {
-            if (context.Users.Any(u => u.UserName == "admin"))
+            // Create user store and manager.
+            var userStore = new UserStore<ApplicationUser>(context);
+            var userManager = new UserManager<ApplicationUser>(userStore);
+
+            // Load user entity.
+            var user = userManager.Users.FirstOrDefault(u => u.UserName == "admin");
+
+            // Verify that "admin" user already exists.
+            if (null == user)
             {
-                return;
+                // Create new user instance.
+                user = new ApplicationUser
+                {
+                    UserName = "admin",
+                    ApiToken = Guid.NewGuid().ToString()
+                };
+
+                // Finally create it within database also defining a password that will be hashed.
+                userManager.Create(user, "S3cr3t!");
             }
 
-            // Create user store and manager.
-            var store = new UserStore<ApplicationUser>(context);
-            var manager = new UserManager<ApplicationUser>(store);
+            // Create role store and manager.
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
 
-            // Create new user instance.
-            var user = new ApplicationUser {
-                UserName = "admin",
-                ApiToken = Guid.NewGuid().ToString()
-            };
+            //
+            string[] roleNames = { "Admin", "User" };
+            foreach (string roleName in roleNames)
+            {
+                // Verify that given role name exists.
+                if(roleManager.RoleExists(roleName))
+                {
+                    continue;
+                }
 
-            // Finally create it within database also defining a password that will be hashed.
-            manager.Create(user, "S3cr3t!");
+                // Create new role entity.
+                var role = new IdentityRole(roleName);
+                roleManager.Create(role);
+            }
+
+            userManager.AddToRole(user.Id, "Admin");
         }
     }
 }

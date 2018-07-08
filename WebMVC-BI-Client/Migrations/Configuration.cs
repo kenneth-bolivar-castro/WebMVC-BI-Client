@@ -21,7 +21,7 @@ namespace WebMVC_BI_Client.Migrations
             //  to avoid creating duplicate seed data.
 
             // Seed application users.
-            ApplicationUsersSeeder.run(context);
+            ApplicationUsersSeeder.Run(context);
         }
     }
 }
