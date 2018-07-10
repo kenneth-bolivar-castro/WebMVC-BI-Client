@@ -18,6 +18,7 @@ namespace WebMVC_BI_Client.Controllers
         public ActionResult Index()
         {
             return View(db.Entries.ToList());
+
         }
 
         // GET: EntriesWeb/Details/5
