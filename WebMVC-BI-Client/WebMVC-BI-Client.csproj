@@ -319,6 +319,7 @@
     <Content Include="Views\EntriesWeb\Details.cshtml" />
     <Content Include="Views\EntriesWeb\Edit.cshtml" />
     <Content Include="Views\EntriesWeb\Index.cshtml" />
+    <Content Include="Views\Account\UsersList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

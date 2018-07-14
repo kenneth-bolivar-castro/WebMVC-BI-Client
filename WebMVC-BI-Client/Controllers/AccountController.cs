@@ -12,9 +12,11 @@ using WebMVC_BI_Client.Models;
 
 namespace WebMVC_BI_Client.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class AccountController : Controller
     {
+     //   private BIClientDBContext db = new BIClientDBContext();
+
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -55,6 +57,17 @@ namespace WebMVC_BI_Client.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
+
+        // GET: UsersList
+        public ActionResult UsersList()
+        {
+           // return View(db.Users.ToList());
+
+            var result = UserManager.Users.ToList();
+            return View(result);
+
+        }
+
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
@@ -167,7 +180,7 @@ namespace WebMVC_BI_Client.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("UsersList", "Account");
                 }
                 AddErrors(result);
             }
