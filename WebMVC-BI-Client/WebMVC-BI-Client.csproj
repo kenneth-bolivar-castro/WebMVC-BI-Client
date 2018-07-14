@@ -235,7 +235,13 @@
     <Compile Include="Migrations\BIClient\201806300547369_AddUserToEntries.Designer.cs">
       <DependentUpon>201806300547369_AddUserToEntries.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\BIClient\201807142107417_AddEntryStatuses.cs" />
+    <Compile Include="Migrations\BIClient\201807142107417_AddEntryStatuses.Designer.cs">
+      <DependentUpon>201807142107417_AddEntryStatuses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\BIClient\ClientSeeder.cs" />
     <Compile Include="Migrations\BIClient\Configuration.cs" />
+    <Compile Include="Migrations\BIClient\EntrySeeder.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BIClientDBContext.cs" />
@@ -342,6 +348,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\BIClient\201806300547369_AddUserToEntries.resx">
       <DependentUpon>201806300547369_AddUserToEntries.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\BIClient\201807142107417_AddEntryStatuses.resx">
+      <DependentUpon>201807142107417_AddEntryStatuses.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

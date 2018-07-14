@@ -19,6 +19,12 @@ namespace WebMVC_BI_Client.Migrations.BIClient
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
+
+            //
+            ClientSeeder.Run(context);
+
+            //
+            EntrySeeder.Run(context);
         }
     }
 }

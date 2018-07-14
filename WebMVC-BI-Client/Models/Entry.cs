@@ -8,6 +8,15 @@ using System.Web;
 
 namespace WebMVC_BI_Client.Models
 {
+
+    public enum EntryStatus
+    {
+        Solicitud,
+        Cancelado,
+        VentaConcretada,
+        FueraInventario
+    }
+
     public class Entry
     {
         [Key]
@@ -21,5 +30,7 @@ namespace WebMVC_BI_Client.Models
         public Client Client { get; set; }
         [Required]
         public User User { get; set; }
+        [Required]
+        public EntryStatus Status { get; set; }
     }
 }
