@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using WebMVC_BI_Client.Models;
 
 namespace WebMVC_BI_Client.Controllers
-{  // [Authorize]
+{   [Authorize]
     public class EntriesWebController : Controller
     {
         private BIClientDBContext db = new BIClientDBContext();

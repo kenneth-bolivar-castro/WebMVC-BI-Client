@@ -12,7 +12,7 @@ using WebMVC_BI_Client.Models;
 
 namespace WebMVC_BI_Client.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class AccountController : Controller
     {
      //   private BIClientDBContext db = new BIClientDBContext();
@@ -56,7 +56,7 @@ namespace WebMVC_BI_Client.Controllers
 
         //
         // GET: /Account/Login
-        [AllowAnonymous]
+       // [AllowAnonymous]
 
         // GET: UsersList
         public ActionResult UsersList()
@@ -77,7 +77,7 @@ namespace WebMVC_BI_Client.Controllers
         //
         // POST: /Account/Login
         [HttpPost]
-        [AllowAnonymous]
+       // [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {

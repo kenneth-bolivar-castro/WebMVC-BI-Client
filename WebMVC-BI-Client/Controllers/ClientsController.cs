@@ -13,6 +13,7 @@ using WebMVC_BI_Client.Models;
 
 namespace WebMVC_BI_Client
 {
+    [Authorize]
     public class ClientsController : ApiController
     {
         private BIClientDBContext db = new BIClientDBContext();
