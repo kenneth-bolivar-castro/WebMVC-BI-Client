@@ -239,6 +239,10 @@
     <Compile Include="Migrations\BIClient\201807142107417_AddEntryStatuses.Designer.cs">
       <DependentUpon>201807142107417_AddEntryStatuses.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\BIClient\201807152235584_EntryRelationships.cs" />
+    <Compile Include="Migrations\BIClient\201807152235584_EntryRelationships.Designer.cs">
+      <DependentUpon>201807152235584_EntryRelationships.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\BIClient\ClientSeeder.cs" />
     <Compile Include="Migrations\BIClient\Configuration.cs" />
     <Compile Include="Migrations\BIClient\EntrySeeder.cs" />
@@ -352,6 +356,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\BIClient\201807142107417_AddEntryStatuses.resx">
       <DependentUpon>201807142107417_AddEntryStatuses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\BIClient\201807152235584_EntryRelationships.resx">
+      <DependentUpon>201807152235584_EntryRelationships.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

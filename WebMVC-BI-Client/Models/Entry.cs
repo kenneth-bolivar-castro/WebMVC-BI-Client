@@ -26,10 +26,15 @@ namespace WebMVC_BI_Client.Models
         public string Comments { get; set; }
         [Required]
         public string Item { get; set; }
-        [Required]
-        public Client Client { get; set; }
-        [Required]
-        public User User { get; set; }
+
+        [ForeignKey("Client")]
+        public int ClientId { get; set; }
+        public virtual Client Client { get; set; }
+
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+        public virtual User User { get; set; }
+
         [Required]
         public EntryStatus Status { get; set; }
     }
