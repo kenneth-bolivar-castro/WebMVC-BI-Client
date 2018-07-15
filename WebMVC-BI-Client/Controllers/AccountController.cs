@@ -12,7 +12,7 @@ using WebMVC_BI_Client.Models;
 
 namespace WebMVC_BI_Client.Controllers
 {
-    [Authorize]
+   // [Authorize]
     public class AccountController : Controller
     {
      //   private BIClientDBContext db = new BIClientDBContext();
@@ -56,8 +56,8 @@ namespace WebMVC_BI_Client.Controllers
 
         //
         // GET: /Account/Login
-       // [AllowAnonymous]
-
+        // [AllowAnonymous]
+        [Authorize]
         // GET: UsersList
         public ActionResult UsersList()
         {
