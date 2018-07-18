@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -6,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebMVC_BI_Client.Models;
@@ -15,8 +18,7 @@ namespace WebMVC_BI_Client.Controllers
    // [Authorize]
     public class AccountController : Controller
     {
-     //   private BIClientDBContext db = new BIClientDBContext();
-
+        private ApplicationDbContext db = new ApplicationDbContext();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -24,7 +26,7 @@ namespace WebMVC_BI_Client.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -61,11 +63,23 @@ namespace WebMVC_BI_Client.Controllers
         // GET: UsersList
         public ActionResult UsersList()
         {
-           // return View(db.Users.ToList());
-
             var result = UserManager.Users.ToList();
-            return View(result);
+            var map = new Dictionary<string, string>();
 
+            foreach (var user in result)
+            {
+                var roles = UserManager.GetRoles(user.Id);
+                var roleNames = new ArrayList();
+                foreach (var roleReference in user.Roles)
+                {
+                    roleNames.Add(db.Roles.Find(roleReference.RoleId).Name);
+                }
+                // Add new pair values (UserID, RoleNames).
+                map.Add(user.Id, string.Join(", ", roles));
+            }
+
+            ViewBag.UserRoles = map;
+            return View(result);
         }
 
         public ActionResult Login(string returnUrl)
