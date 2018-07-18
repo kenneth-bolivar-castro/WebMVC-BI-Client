@@ -10,7 +10,7 @@ namespace WebMVC_BI_Client.Migrations.BIClient
     {
         public static void Run(BIClientDBContext context)
         {
-            //
+            // 
             string[] items = new string[] {
                 "Cocina de gas con horno",
                 "Aire acondicionado 12 000 VTU"
