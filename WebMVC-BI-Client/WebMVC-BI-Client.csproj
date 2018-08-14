@@ -254,6 +254,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UsersData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -324,6 +325,7 @@
     <Content Include="Views\EntriesWeb\Edit.cshtml" />
     <Content Include="Views\EntriesWeb\Index.cshtml" />
     <Content Include="Views\Account\UsersList.cshtml" />
+    <Content Include="Views\Account\RegisterUD.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
