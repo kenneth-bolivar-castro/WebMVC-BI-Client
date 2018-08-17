@@ -1,69 +1,48 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-//using System.Collections.Generic;
-using System.Globalization;
-//using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-//using System.Web;
-//using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
 using WebMVC_BI_Client.Models;
-//using ASPNET_MVC_ChartsDemo.Models;
 using Newtonsoft.Json;
-//using System.Collections.Generic;
-//using System.Web.Mvc;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace WebMVC_BI_Client.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-       
-        public ActionResult Index()
+        private BIClientDBContext context = new BIClientDBContext();
+
+        public ApplicationUserManager UserManager
         {
-
-
-            // GET: Home
-          //  public ActionResult Index()
-            
-                List<DataPoint> dataPoints = new List<DataPoint>();
-
-                dataPoints.Add(new DataPoint("Samsung", 25));
-                dataPoints.Add(new DataPoint("Micromax", 13));
-                dataPoints.Add(new DataPoint("Lenovo", 8));
-                dataPoints.Add(new DataPoint("Intex", 7));
-                dataPoints.Add(new DataPoint("Reliance", 6.8));
-                dataPoints.Add(new DataPoint("Others", 40.2));
-
-                ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
-
-               // return View();
-            
-
-
-            return View();
+            get
+            {
+                return HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
         }
 
-        [Authorize]
-        public ActionResult About()
+        public async Task<ActionResult> Index()
         {
-            ViewBag.Message = "Your application description page.";
+            List<DataPoint> dataPoints = new List<DataPoint>();
 
-            return View();
-        }
-        [Authorize]
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
+            var result = (from e in context.Entries
+                        group e by e.UserId into g
+                        select new
+                        {
+                            UserId = g.Key,
+                            Count = g.Count()
+                        }).ToList();
 
+            var manager = UserManager;
+            foreach(var row in result)
+            {
+                var user = await manager.FindByIdAsync(row.UserId);
+                dataPoints.Add(new DataPoint(user.UserName, row.Count));
+            }
+
+            ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
             return View();
         }
     }
