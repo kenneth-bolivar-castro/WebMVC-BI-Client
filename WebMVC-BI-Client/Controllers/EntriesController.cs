@@ -19,7 +19,8 @@ namespace WebMVC_BI_Client
     public class EntriesController : ApiController
     {
         private BIClientDBContext db = new BIClientDBContext();
-
+        private ApplicationDbContext appDb = ApplicationDbContext.Create();
+        
         // GET: api/Entries
         public IQueryable<Entry> GetEntries()
         {
@@ -43,6 +44,9 @@ namespace WebMVC_BI_Client
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutEntry(int id, Entry entry)
         {
+            // Setup current user
+            entry.UserId = appDb.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).Id;
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -78,9 +82,6 @@ namespace WebMVC_BI_Client
         [ResponseType(typeof(Entry))]
         public async Task<IHttpActionResult> PostEntry(Entry entry)
         {
-            //
-            ApplicationDbContext appDb = ApplicationDbContext.Create();
-
             // Setup current user
             entry.UserId = appDb.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).Id;
 
