@@ -21,6 +21,8 @@ namespace WebMVC_BI_Client.Models
 
         public DbSet<Client> Clients { get; set; }
 
+        public DbSet<UsersData> UsersData { get; set; }
+
         public DbSet<Entry> Entries { get; set; }
 
         public DbSet<User> Users { get; set; }
@@ -28,7 +30,9 @@ namespace WebMVC_BI_Client.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<User>().ToTable("AspNetUsers");
+            modelBuilder.Entity<UsersData>().ToTable("AspNetUsers");
         }
+
+       
     }
 }
