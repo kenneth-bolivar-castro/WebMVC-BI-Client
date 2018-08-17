@@ -10,7 +10,6 @@ namespace WebMVC_BI_Client.Models
     public class ApplicationUser : IdentityUser
     {
         public string ApiToken { get; set; }
-        //public string Role { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

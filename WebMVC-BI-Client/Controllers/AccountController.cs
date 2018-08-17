@@ -7,20 +7,16 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebMVC_BI_Client.Models;
 
 namespace WebMVC_BI_Client.Controllers
 {
-
-
-
-   // [Authorize]
+    [Authorize]
     public class AccountController : Controller
     {
-     //   private BIClientDBContext db = new BIClientDBContext();
-
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -58,13 +54,6 @@ namespace WebMVC_BI_Client.Controllers
             }
         }
 
-
-        [Authorize]
-
-
-
-
-
         // GET: UsersList
         public ActionResult UsersList()
         {
@@ -89,19 +78,16 @@ namespace WebMVC_BI_Client.Controllers
 
         }
 
-       
-
-
+        [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
-        //
         // POST: /Account/Login
         [HttpPost]
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
@@ -130,7 +116,7 @@ namespace WebMVC_BI_Client.Controllers
 
         //
         // GET: /Account/VerifyCode
-       // [AllowAnonymous]
+        [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
             // Requerir que el usuario haya iniciado sesión con nombre de usuario y contraseña o inicio de sesión externo
@@ -144,7 +130,7 @@ namespace WebMVC_BI_Client.Controllers
         //
         // POST: /Account/VerifyCode
         [HttpPost]
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
         {
@@ -171,77 +157,102 @@ namespace WebMVC_BI_Client.Controllers
             }
         }
 
+        // GET: /Account/Edit
+        public ActionResult Edit(string userId)
+        {
+            ApplicationUser user = UserManager.FindById(userId);
+            EditUserViewModel editUserModel = new EditUserViewModel
+            {
+                key = user.Id,
+                UserName = user.UserName,
+                isAdmin = UserManager.GetRoles(user.Id).Contains("Admin")
+            };
+
+            return View(editUserModel);
+        }
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(EditUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                ApplicationUser user = await UserManager.FindByIdAsync(model.key);
+                user.UserName = model.UserName;
+                UserManager.Update(user);
+
+                //
+                if (model.isAdmin && !UserManager.GetRoles(user.Id).Contains("Admin"))
+                {
+                    UserManager.AddToRole(user.Id, "Admin");
+                }
+
+                //
+                if (!model.isAdmin && UserManager.GetRoles(user.Id).Contains("Admin"))
+                {
+                    UserManager.RemoveFromRole(user.Id, "Admin");
+                }
+
+                return RedirectToAction("UsersList", "Account");
+            }
+
+            return View(model);
+        }
+
         //
         // GET: /Account/Register
-       // [AllowAnonymous]
-        //public ActionResult RegisterUD()
-        //{
-        //    return View();
-        //}
+        public ActionResult Register()
+        {
+            return View();
+        }
 
         //
         // POST: /Account/Register
-        //[HttpPost]
-       // [AllowAnonymous]
-       // [ValidateAntiForgeryToken]
-        //public ActionResult RegisterUD(UsersData account)
-        //{
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = model.UserName,
+                    ApiToken = Guid.NewGuid().ToString()
+                };
 
-        //    if (ModelState.IsValid)
-        //    {
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // Add user role to new user.
+                    UserManager.AddToRole(user.Id, "User");
 
-        //        using (BIClientDBContext db = new BIClientDBContext())
-        //        {
-        //            db.UsersData.Add(account);
-        //            db.SaveChanges();
-        //            //var user = new UsersData
-        //            //{
+                    // If it was marked as admin, then include admin role.
+                    if(model.isAdmin)
+                    {
+                        UserManager.AddToRole(user.Id, "Admin");
+                    }
 
-        //            //    UserNameUD = 
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
-        //            //};
+                    // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Enviar correo electrónico con este vínculo
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 
-        //        }
-        //        // var ApiToken = Guid.NewGuid().ToString()
+                    return RedirectToAction("UsersList", "Account");
+                }
+                AddErrors(result);
+            }
 
-        //        ModelState.Clear();
-        //        ViewBag.Message = account.UserName + " registrado satisfactoriamente";
-        //    }
-        //    return View();
-
-
-
-
-        //    //if (ModelState.IsValid)
-        //    //{
-        //    //    var user = new ApplicationUser {
-        //    //        UserName = model.UserName,
-        //    //      //  Email = model.Role,
-        //    //        ApiToken = Guid.NewGuid().ToString()
-        //    //    };
-        //    //    var result = await UserManager.CreateAsync(user, model.Password);
-        //    //    if (result.Succeeded)
-        //    //    {
-        //    //        await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-        //    //        // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
-        //    //        // Enviar correo electrónico con este vínculo
-        //    //        // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-        //    //        // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-        //    //        // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
-
-        //    //        return RedirectToAction("UsersList", "Account");
-        //    //    }
-        //    //    AddErrors(result);
-        //    //}
-
-        //    //// Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
-        //    //return View(model);
-        //}
+            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
+            return View(model);
+        }
 
         //
         // GET: /Account/ConfirmEmail
-      //  [AllowAnonymous]
+        [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
             if (userId == null || code == null)
@@ -254,7 +265,7 @@ namespace WebMVC_BI_Client.Controllers
 
         //
         // GET: /Account/ForgotPassword
-       // [AllowAnonymous]
+        [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
             return View();
@@ -263,13 +274,13 @@ namespace WebMVC_BI_Client.Controllers
         //
         // POST: /Account/ForgotPassword
         [HttpPost]
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Role);
+                var user = await UserManager.FindByNameAsync(model.Email);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // No revelar que el usuario no existe o que no está confirmado
@@ -290,7 +301,7 @@ namespace WebMVC_BI_Client.Controllers
 
         //
         // GET: /Account/ForgotPasswordConfirmation
-      //  [AllowAnonymous]
+        [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmation()
         {
             return View();
@@ -298,7 +309,7 @@ namespace WebMVC_BI_Client.Controllers
 
         //
         // GET: /Account/ResetPassword
-       // [AllowAnonymous]
+        [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
             return code == null ? View("Error") : View();
@@ -307,7 +318,7 @@ namespace WebMVC_BI_Client.Controllers
         //
         // POST: /Account/ResetPassword
         [HttpPost]
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
@@ -315,7 +326,7 @@ namespace WebMVC_BI_Client.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Role);
+            var user = await UserManager.FindByNameAsync(model.Email);
             if (user == null)
             {
                 // No revelar que el usuario no existe
@@ -332,7 +343,7 @@ namespace WebMVC_BI_Client.Controllers
 
         //
         // GET: /Account/ResetPasswordConfirmation
-       // [AllowAnonymous]
+        [AllowAnonymous]
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
@@ -341,7 +352,7 @@ namespace WebMVC_BI_Client.Controllers
         //
         // POST: /Account/ExternalLogin
         [HttpPost]
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
@@ -351,7 +362,7 @@ namespace WebMVC_BI_Client.Controllers
 
         //
         // GET: /Account/SendCode
-       // [AllowAnonymous]
+        [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
         {
             var userId = await SignInManager.GetVerifiedUserIdAsync();
@@ -367,7 +378,7 @@ namespace WebMVC_BI_Client.Controllers
         //
         // POST: /Account/SendCode
         [HttpPost]
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> SendCode(SendCodeViewModel model)
         {
@@ -386,7 +397,7 @@ namespace WebMVC_BI_Client.Controllers
 
         //
         // GET: /Account/ExternalLoginCallback
-       // [AllowAnonymous]
+        [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
@@ -410,14 +421,14 @@ namespace WebMVC_BI_Client.Controllers
                     // Si el usuario no tiene ninguna cuenta, solicitar que cree una
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Role = loginInfo.Email });
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
             }
         }
 
         //
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
@@ -434,7 +445,7 @@ namespace WebMVC_BI_Client.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Role, Email = model.Role };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -464,7 +475,7 @@ namespace WebMVC_BI_Client.Controllers
 
         //
         // GET: /Account/ExternalLoginFailure
-       // [AllowAnonymous]
+        [AllowAnonymous]
         public ActionResult ExternalLoginFailure()
         {
             return View();

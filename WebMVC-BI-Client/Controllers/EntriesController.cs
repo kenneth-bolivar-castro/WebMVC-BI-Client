@@ -24,7 +24,8 @@ namespace WebMVC_BI_Client
         // GET: api/Entries
         public IQueryable<Entry> GetEntries()
         {
-            return db.Entries;
+            ApplicationUser currentUser = appDb.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            return db.Entries.Where(e => e.UserId == currentUser.Id);
         }
 
         // GET: api/Entries/5

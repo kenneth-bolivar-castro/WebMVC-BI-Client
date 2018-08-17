@@ -5,9 +5,9 @@ namespace WebMVC_BI_Client.Models
 {
     public class ExternalLoginConfirmationViewModel
     {
-      //  [Required]
-        [Display(Name = "Role")]
-        public string Role { get; set; }
+        [Required]
+        [Display(Name = "Correo electrónico")]
+        public string Email { get; set; }
     }
 
     public class ExternalLoginListViewModel
@@ -41,9 +41,9 @@ namespace WebMVC_BI_Client.Models
 
     public class ForgotViewModel
     {
-       // [Required]
-        [Display(Name = "Role")]
-        public string Role { get; set; }
+        [Required]
+        [Display(Name = "Correo electrónico")]
+        public string Email { get; set; }
     }
 
     public class LoginViewModel
@@ -67,11 +67,9 @@ namespace WebMVC_BI_Client.Models
         [Display(Name = "Nombre usuario")]
         public string UserName { get; set; }
 
-       // [Required]
-       // [EmailAddress]
-        //[Display(Name = "Role")]
-       // public string Role { get; set; }
-        
+        [Display(Name = "Es administrador?")]
+        public bool isAdmin { get; set; }
+
         [Required]
         [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]
         [DataType(DataType.Password)]
@@ -84,12 +82,26 @@ namespace WebMVC_BI_Client.Models
         public string ConfirmPassword { get; set; }
     }
 
+    public class EditUserViewModel
+    {
+        [Required]
+        [Display(Name = "Id")]
+        public string key { get; set; }
+
+        [Required]
+        [Display(Name = "Nombre usuario")]
+        public string UserName { get; set; }
+
+        [Display(Name = "Es administrador?")]
+        public bool isAdmin { get; set; }
+    }
+
     public class ResetPasswordViewModel
     {
-       // [Required]
-       // [EmailAddress]
-        [Display(Name = "Role")]
-        public string Role { get; set; }
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Correo electrónico")]
+        public string Email { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]
@@ -107,9 +119,9 @@ namespace WebMVC_BI_Client.Models
 
     public class ForgotPasswordViewModel
     {
-       // [Required]
-       // [EmailAddress]
-        [Display(Name = "Role")]
-        public string Role { get; set; }
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Correo electrónico")]
+        public string Email { get; set; }
     }
 }

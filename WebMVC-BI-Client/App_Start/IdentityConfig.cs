@@ -47,7 +47,7 @@ namespace WebMVC_BI_Client
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true
+                RequireUniqueEmail = false
             };
 
             // Configure la lógica de validación de contraseñas

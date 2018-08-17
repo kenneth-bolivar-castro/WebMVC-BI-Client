@@ -1,15 +1,16 @@
-﻿@model WebMVC_BI_Client.Models.RegisterViewModel
+﻿@model WebMVC_BI_Client.Models.EditUserViewModel
 @{
     ViewBag.Title = "Usuario";
 }
 
 <h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Edit", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
+    @Html.HiddenFor(m => m.key)
     <div class="form-group">
         @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
@@ -23,18 +24,6 @@
                 @Html.CheckBoxFor(m => m.isAdmin)
                 @Html.LabelFor(m => m.isAdmin)
             </div>
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
