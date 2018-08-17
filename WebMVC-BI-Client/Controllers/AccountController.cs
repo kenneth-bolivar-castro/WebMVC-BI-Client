@@ -174,70 +174,70 @@ namespace WebMVC_BI_Client.Controllers
         //
         // GET: /Account/Register
        // [AllowAnonymous]
-        public ActionResult RegisterUD()
-        {
-            return View();
-        }
+        //public ActionResult RegisterUD()
+        //{
+        //    return View();
+        //}
 
         //
         // POST: /Account/Register
-        [HttpPost]
+        //[HttpPost]
        // [AllowAnonymous]
        // [ValidateAntiForgeryToken]
-        public ActionResult RegisterUD(UsersData account)
-        {
+        //public ActionResult RegisterUD(UsersData account)
+        //{
 
-            if (ModelState.IsValid)
-            {
+        //    if (ModelState.IsValid)
+        //    {
 
-                using (BIClientDBContext db = new BIClientDBContext())
-                {
-                    db.UsersData.Add(account);
-                    db.SaveChanges();
-                    //var user = new UsersData
-                    //{
+        //        using (BIClientDBContext db = new BIClientDBContext())
+        //        {
+        //            db.UsersData.Add(account);
+        //            db.SaveChanges();
+        //            //var user = new UsersData
+        //            //{
 
-                    //    UserNameUD = 
+        //            //    UserNameUD = 
 
-                    //};
+        //            //};
 
-                }
-                // var ApiToken = Guid.NewGuid().ToString()
+        //        }
+        //        // var ApiToken = Guid.NewGuid().ToString()
 
-                ModelState.Clear();
-                ViewBag.Message = account.UserName + " registrado satisfactoriamente";
-            }
-            return View();
-
-
+        //        ModelState.Clear();
+        //        ViewBag.Message = account.UserName + " registrado satisfactoriamente";
+        //    }
+        //    return View();
 
 
-            //if (ModelState.IsValid)
-            //{
-            //    var user = new ApplicationUser {
-            //        UserName = model.UserName,
-            //      //  Email = model.Role,
-            //        ApiToken = Guid.NewGuid().ToString()
-            //    };
-            //    var result = await UserManager.CreateAsync(user, model.Password);
-            //    if (result.Succeeded)
-            //    {
-            //        await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+
+
+        //    //if (ModelState.IsValid)
+        //    //{
+        //    //    var user = new ApplicationUser {
+        //    //        UserName = model.UserName,
+        //    //      //  Email = model.Role,
+        //    //        ApiToken = Guid.NewGuid().ToString()
+        //    //    };
+        //    //    var result = await UserManager.CreateAsync(user, model.Password);
+        //    //    if (result.Succeeded)
+        //    //    {
+        //    //        await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
-            //        // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
-            //        // Enviar correo electrónico con este vínculo
-            //        // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-            //        // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-            //        // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+        //    //        // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
+        //    //        // Enviar correo electrónico con este vínculo
+        //    //        // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+        //    //        // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+        //    //        // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 
-            //        return RedirectToAction("UsersList", "Account");
-            //    }
-            //    AddErrors(result);
-            //}
+        //    //        return RedirectToAction("UsersList", "Account");
+        //    //    }
+        //    //    AddErrors(result);
+        //    //}
 
-            //// Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
-            //return View(model);
-        }
+        //    //// Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
+        //    //return View(model);
+        //}
 
         //
         // GET: /Account/ConfirmEmail
