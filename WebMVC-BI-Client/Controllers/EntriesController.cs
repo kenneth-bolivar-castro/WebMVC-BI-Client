@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebMVC_BI_Client.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace WebMVC_BI_Client
 {
@@ -76,6 +78,12 @@ namespace WebMVC_BI_Client
         [ResponseType(typeof(Entry))]
         public async Task<IHttpActionResult> PostEntry(Entry entry)
         {
+            //
+            ApplicationDbContext appDb = ApplicationDbContext.Create();
+
+            // Setup current user
+            entry.UserId = appDb.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).Id;
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
